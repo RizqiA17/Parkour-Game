@@ -230,7 +230,9 @@ public class PlayerMovement : MonoBehaviour
                     float angel = Mathf.SmoothDampAngle(transform.eulerAngles.y, obj.transform.rotation.y + 90, ref currentVelocity, rotationSmoothTime);
                     transform.rotation = Quaternion.Euler(0, angel, 0);
 
-                    velocity.z = SmoothTransitionFloat(velocity.z, slideSpeed);
+                    slideSpeed = obj.transform.rotation.eulerAngles.x / 90 * gravityForce;
+
+                    velocity.z = SmoothTransitionFloat(velocity.z, velocity.z + slideSpeed);
                     Movement(velocity);
 
                     animator.SetBool(animGrounded, true);
@@ -241,7 +243,7 @@ public class PlayerMovement : MonoBehaviour
 
                     if (Input.GetButtonDown("Jump"))
                     {
-                        velocity.y = 0;
+                        velocity.y = (velocity.z - 1) * -2.5f;
                         animator.CrossFade(animJumpRun, 0.1f);
                     }
                     else Gravity();
@@ -310,7 +312,10 @@ public class PlayerMovement : MonoBehaviour
 
     private float SmoothTransitionFloat(float startFloat, float endFloat)
     {
-        return Mathf.Lerp(startFloat, endFloat, Time.deltaTime);
+        float result = 0;
+        if (Mathf.Abs(startFloat - endFloat) < 0.001f) result = endFloat;
+        else result = Mathf.Lerp(startFloat, endFloat, Time.deltaTime);
+        return result;
     }
 
     //private void OnCollisionEnter(Collision collision)
