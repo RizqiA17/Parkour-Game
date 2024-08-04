@@ -109,7 +109,9 @@ public class PlayerMovement : MonoBehaviour
                     }
                     else
                     {
-                        moveDirection = Vector3.zero;
+
+                        Jump();
+                        moveDirection = transform.forward;
                         animator.CrossFade(animJump, 0.1f);
                     }
                 }
